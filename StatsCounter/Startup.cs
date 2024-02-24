@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using StatsCounter.Extensions;
 using StatsCounter.Services;
+using StatsCounter.Data;
 
 namespace StatsCounter;
 
@@ -22,6 +24,13 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
+
+        // Add dbcontext
+        services.AddDbContext<StatsCounterContext>(Options =>
+        {
+            Options.UseSqlite("Data Source=Sqlite.db");
+        });
+
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo 

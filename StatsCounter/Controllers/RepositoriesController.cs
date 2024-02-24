@@ -19,10 +19,17 @@ public class RepositoriesController : ControllerBase
 
     [HttpGet("{owner}")]
     [ProducesResponseType(typeof(RepositoryStats), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RepositoryStats), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RepositoryStats>> Get(
         [FromRoute] string owner)
     {
         var result = await _statsService.GetRepositoryStatsByOwnerAsync(owner).ConfigureAwait(false);
+
+        if (result is null)
+        {
+            return NotFound();
+        }
+
         return Ok(result);
     }
 }

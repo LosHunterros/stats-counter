@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using StatsCounter.Models;
 
@@ -20,8 +21,12 @@ public class GitHubService : IGitHubService
         _httpClient = httpClient;
     }
 
-    public Task<IEnumerable<RepositoryInfo>> GetRepositoryInfosByOwnerAsync(string owner)
+    public async Task<IEnumerable<RepositoryInfo>> GetRepositoryInfosByOwnerAsync(string owner)
     {
-        throw new NotImplementedException(); // TODO: add your code here
+        HttpResponseMessage response = await _httpClient.GetAsync($"https://api.github.com/users/{owner}/repos");
+
+        List<RepositoryInfo> repositoryInfos = await response.Content.ReadFromJsonAsync<List<RepositoryInfo>>();
+
+        return repositoryInfos;
     }
 }
